@@ -7,13 +7,13 @@ fun main() {
         .readText()
         .trim()
         .split(",")
-        .map(String::toInt)
+        .map(String::toLong)
 
-    var part1: Int? = null
-    IntcodeVM(input.toIntArray()).run({ 1 }, { part1 = it }) // 9219874
+    var part1: Long? = null
+    IntcodeVM(ArrayList(input)).run({ 1L }, { part1 = it }) // 9219874
     println("Part 1 Answer: $part1")
 
-    var part2: Int? = null
-    IntcodeVM(input.toIntArray()).run({ 5 }, { part2 = it }) // 5893654
+    var part2: Long? = null
+    IntcodeVM(ArrayList(input)).run({ 5L }, { part2 = it }) // 5893654
     println("Part 2 Answer: $part2")
 }
