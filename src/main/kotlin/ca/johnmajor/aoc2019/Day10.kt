@@ -8,21 +8,15 @@ class Day10(private val asteroids: List<Point>) {
 
     fun part2(): Int? {
         return mostVisible()?.first?.let { station ->
-            val sortedByAngle = asteroids.asSequence()
+            asteroids.asSequence()
                 .filter { it != station }
                 .groupBy { station.angle(it) }
-                .map { (angle, asteroids) -> angle to asteroids.sortedBy { station.distance(it) }.toMutableList() }
+                .map { (angle, asteroids) -> angle to asteroids.sortedBy { station.distance(it) } }
                 .sortedByDescending { it.first }
                 .map { it.second }
-
-            var p: Point? = null
-            for (i in 0 until 200) {
-                val ys = sortedByAngle[i % sortedByAngle.size]
-                if (ys.isNotEmpty()) {
-                    p = ys.removeAt(0)
-                }
-            }
-            p?.let { it.x * 100 + it.y }
+                .roundRobin()
+                .drop(199)
+                .firstOrNull()?.let { it.x * 100 + it.y }
         }
     }
 
@@ -37,6 +31,21 @@ class Day10(private val asteroids: List<Point>) {
     private fun Point.angle(other: Point): Double =
         // The y axis is flipped in our coordinate system.
         atan2((other.x - x).toDouble(), (other.y - y).toDouble())
+
+    private fun <T> Iterable<Iterable<T>>.roundRobin(): Sequence<T> = sequence {
+        val its = mapTo(mutableListOf()) { it.iterator() }
+        while (its.isNotEmpty()) {
+            val rows = its.iterator()
+            while (rows.hasNext()) {
+                val cols = rows.next()
+                if (cols.hasNext()) {
+                    yield(cols.next())
+                } else {
+                    rows.remove()
+                }
+            }
+        }
+    }
 
     companion object {
         fun parseInput(path: String): List<Point> =
