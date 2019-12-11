@@ -4,6 +4,9 @@ enum class CardinalDirection {
     NORTH, EAST, SOUTH, WEST;
 
     companion object {
+        fun from(s: String): CardinalDirection? =
+            if (s.isEmpty()) null else from(s.first())
+
         fun from(c: Char): CardinalDirection? =
             when (c.toUpperCase()) {
                 'N', 'U' -> NORTH
