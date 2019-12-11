@@ -34,7 +34,7 @@ fun main() {
         .split(",")
         .map(String::toInt)
         .toIntArray()
-    println("Part 1 Answer: ${day2part1(input.clone())}")
-    println("Part 2 Answer: ${day2part2(input.clone()) ?: 0}")
+    println("Part 1 Answer: ${day2part1(input.clone())}") // 3267740
+    println("Part 2 Answer: ${day2part2(input.clone()) ?: 0}") // 7870
 }
 

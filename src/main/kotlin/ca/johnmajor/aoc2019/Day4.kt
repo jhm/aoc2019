@@ -22,8 +22,8 @@ fun main() {
         .split("-")
         .map(String::toInt)
     val part1 = (input[0]..input[1]).count(::day4part1)
-    println("Part 1 Answer: $part1")
+    println("Part 1 Answer: $part1") // 2150
 
     val part2 = (input[0]..input[1]).count(::day4part2)
-    println("Part 2 Answer: $part2")
+    println("Part 2 Answer: $part2") // 1462
 }

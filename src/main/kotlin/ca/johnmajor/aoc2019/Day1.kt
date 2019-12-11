@@ -17,6 +17,6 @@ fun main() {
         .readLines()
         .map(String::toInt)
         .toIntArray()
-    println("Part 1 Answer: ${day1part1(input)}")
-    println("Part 2 Answer: ${day1part2(input)}")
+    println("Part 1 Answer: ${day1part1(input)}") // 3226407
+    println("Part 2 Answer: ${day1part2(input)}") // 4836736
 }

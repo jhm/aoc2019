@@ -2,11 +2,8 @@ package ca.johnmajor.aoc2019
 
 import java.io.File
 import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.pow
-import kotlin.math.sqrt
 
-class Day10(private val asteroids: List<Asteroid>) {
+class Day10(private val asteroids: List<Point>) {
     fun part1(): Int? = mostVisible()?.second
 
     fun part2(): Int? {
@@ -18,7 +15,7 @@ class Day10(private val asteroids: List<Asteroid>) {
                 .sortedByDescending { it.first }
                 .map { it.second }
 
-            var p: Asteroid? = null
+            var p: Point? = null
             for (i in 0 until 200) {
                 val ys = sortedByAngle[i % sortedByAngle.size]
                 if (ys.isNotEmpty()) {
@@ -29,38 +26,30 @@ class Day10(private val asteroids: List<Asteroid>) {
         }
     }
 
-    private fun mostVisible(): Pair<Asteroid, Int>? =
+    private fun mostVisible(): Pair<Point, Int>? =
         asteroids.map {
-            it to (it.countVisible(asteroids - setOf(it)) ?: 0)
+            it to (countVisible(it, asteroids - setOf(it)) ?: 0)
         }.maxBy { it.second }
 
+    private fun countVisible(from: Point, to: List<Point>): Int? =
+        to.map {
+            val dx = it.x - from.x
+            val dy = it.y - from.y
+            val d = abs(gcd(dx, dy))
+            dx / d to dy / d
+        }.distinct().size
+
     companion object {
-        fun parseInput(path: String): List<Asteroid> =
+        fun parseInput(path: String): List<Point> =
             File(ClassLoader.getSystemResource(path).file).useLines { lines ->
                 lines.withIndex().flatMap { (y, line) ->
                     line.asSequence()
                         .withIndex()
                         .filter { it.value == '#' }
-                        .map { Asteroid(it.index, y) }
+                        .map { Point(it.index, y) }
                 }.toList()
             }
     }
-}
-
-data class Asteroid(val x: Int, val y: Int) {
-    fun countVisible(xs: List<Asteroid>): Int? =
-        xs.map {
-            val dx = it.x - x
-            val dy = it.y - y
-            val d = abs(gcd(dx, dy))
-            dx / d to dy / d
-        }.distinct().size
-
-    fun distance(other: Asteroid): Double =
-        sqrt((other.x - x.toDouble()).pow(2) + (other.y - y.toDouble()).pow(2))
-
-    fun angle(other: Asteroid): Double =
-        atan2((other.x - x).toDouble(), (other.y - y).toDouble())
 }
 
 fun main() {
