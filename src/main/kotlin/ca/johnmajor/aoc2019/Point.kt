@@ -15,7 +15,7 @@ data class Point(val x: Int, val y: Int) {
         }
 
     fun translate(move: CardinalMove): Point =
-        translate(move.cardinalDirection, move.distance)
+        translate(move.direction, move.distance)
 
     fun manhattanDistance(from: Point = Point(0, 0)) = abs(x - from.x) + abs(y - from.y)
 

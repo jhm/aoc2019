@@ -2,14 +2,14 @@ package ca.johnmajor.aoc2019
 
 import java.io.File
 
-fun List<CardinalMove>.allPoints(start: Point = Point(0, 0)): Sequence<Point> =
+private fun List<CardinalMove>.allPoints(start: Point = Point(0, 0)): Sequence<Point> =
     sequence {
         if (isNotEmpty()) {
             var current = start
             yield(current)
             forEach { move ->
                 repeat(move.distance) {
-                    current = current.translate(CardinalMove(move.cardinalDirection, 1))
+                    current = current.translate(move.direction, 1)
                     yield(current)
                 }
             }

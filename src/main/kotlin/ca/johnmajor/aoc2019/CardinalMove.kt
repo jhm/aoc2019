@@ -1,6 +1,6 @@
 package ca.johnmajor.aoc2019
 
-data class CardinalMove(val cardinalDirection: CardinalDirection, val distance: Int) {
+data class CardinalMove(val direction: CardinalDirection, val distance: Int) {
     companion object {
         fun from(s: String): CardinalMove? {
             val direction = CardinalDirection.from(s)
