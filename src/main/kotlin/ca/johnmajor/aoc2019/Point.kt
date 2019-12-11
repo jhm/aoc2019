@@ -1,7 +1,6 @@
 package ca.johnmajor.aoc2019
 
 import kotlin.math.abs
-import kotlin.math.atan2
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -21,7 +20,4 @@ data class Point(val x: Int, val y: Int) {
 
     fun distance(other: Point): Double =
         sqrt((other.x - x.toDouble()).pow(2) + (other.y - y.toDouble()).pow(2))
-
-    fun angle(other: Point): Double =
-        atan2((other.x - x).toDouble(), (other.y - y).toDouble())
 }

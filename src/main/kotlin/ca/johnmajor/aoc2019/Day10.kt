@@ -1,7 +1,7 @@
 package ca.johnmajor.aoc2019
 
 import java.io.File
-import kotlin.math.abs
+import kotlin.math.atan2
 
 class Day10(private val asteroids: List<Point>) {
     fun part1(): Int? = mostVisible()?.second
@@ -32,12 +32,11 @@ class Day10(private val asteroids: List<Point>) {
         }.maxBy { it.second }
 
     private fun countVisible(from: Point, to: List<Point>): Int? =
-        to.map {
-            val dx = it.x - from.x
-            val dy = it.y - from.y
-            val d = abs(gcd(dx, dy))
-            dx / d to dy / d
-        }.distinct().size
+        to.map { from.angle(it) }.distinct().size
+
+    private fun Point.angle(other: Point): Double =
+        // The y axis is flipped in our coordinate system.
+        atan2((other.x - x).toDouble(), (other.y - y).toDouble())
 
     companion object {
         fun parseInput(path: String): List<Point> =
