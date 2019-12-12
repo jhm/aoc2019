@@ -1,8 +1,18 @@
 package ca.johnmajor.aoc2019
 
-import java.io.File
+class Day3(m1: List<CardinalMove>, m2: List<CardinalMove>) : Exercise<Int?, Int?> {
+    private val p1 = m1.points()
+    private val p2 = m2.points()
+    private val intersects = p1.toSet().intersect(p2.toSet()).drop(1)
 
-private fun List<CardinalMove>.allPoints(start: Point = Point(0, 0)): Sequence<Point> =
+    override fun part1(): Int? =
+        intersects.map { it.manhattanDistance() }.min()
+
+    override fun part2(): Int? =
+        intersects.map { p1.indexOf(it) + p2.indexOf(it) }.min()
+}
+
+private fun List<CardinalMove>.points(start: Point = Point(0, 0)): Sequence<Point> =
     sequence {
         if (isNotEmpty()) {
             var current = start
@@ -16,18 +26,11 @@ private fun List<CardinalMove>.allPoints(start: Point = Point(0, 0)): Sequence<P
         }
     }
 
-fun main() {
-    val input = File(ClassLoader.getSystemResource("day3-input.txt").file)
-        .readLines()
-        .map { it.trim().split(",").map { s -> CardinalMove.from(s)!! }.allPoints() }
-
-    val xs = input[0]
-    val ys = input[1]
-    val intersects = xs.toSet().intersect(ys.toSet()).drop(1)
-
-    val part1 = intersects.map { it.manhattanDistance() }.min()
-    println("Part 1 Answer: $part1") // 806
-
-    val part2 = intersects.map { xs.indexOf(it) + ys.indexOf(it) }.min()
-    println("Part 2 Answer: $part2") // 66076
+fun day3(): Day3 {
+    val moves = Input(3).readLines().map {
+        it.trim().split(",").map { s -> CardinalMove.from(s)!! }
+    }
+    return Day3(moves[0], moves[1])
 }
+
+fun main() = run(day3())

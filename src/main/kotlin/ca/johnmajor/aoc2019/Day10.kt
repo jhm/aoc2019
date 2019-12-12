@@ -1,12 +1,11 @@
 package ca.johnmajor.aoc2019
 
-import java.io.File
 import kotlin.math.atan2
 
-class Day10(private val asteroids: List<Point>) {
-    fun part1(): Int? = mostVisible()?.second
+class Day10(private val asteroids: List<Point>) : Exercise<Int?, Int?> {
+    override fun part1(): Int? = mostVisible()?.second
 
-    fun part2(): Int? {
+    override fun part2(): Int? {
         return mostVisible()?.first?.let { station ->
             asteroids.asSequence()
                 .filter { it != station }
@@ -46,23 +45,19 @@ class Day10(private val asteroids: List<Point>) {
             }
         }
     }
-
-    companion object {
-        fun parseInput(path: String): List<Point> =
-            File(ClassLoader.getSystemResource(path).file).useLines { lines ->
-                lines.withIndex().flatMap { (y, line) ->
-                    line.asSequence()
-                        .withIndex()
-                        .filter { it.value == '#' }
-                        .map { Point(it.index, y) }
-                }.toList()
-            }
-    }
 }
 
-fun main() {
-    val input = Day10.parseInput("day10-input.txt")
-    val exercise = Day10(input)
-    println("Part 1: ${exercise.part1()}") // 263
-    println("Part 2: ${exercise.part2()}") // 1110
+fun day10(): Day10 {
+    val input = Input(10).readLines()
+        .asSequence()
+        .withIndex()
+        .flatMap { (y, line) ->
+            line.asSequence()
+                .withIndex()
+                .filter { it.value == '#' }
+                .map { Point(it.index, y) }
+        }.toList()
+    return Day10(input)
 }
+
+fun main() = run(day10())

@@ -3,7 +3,6 @@ package ca.johnmajor.aoc2019
 import kotlin.math.pow
 
 class IntcodeVM(private val mem: ArrayList<Long>) {
-
     enum class Opcode(val opcode: Int) {
         ADD(1),
         MUL(2),
@@ -58,12 +57,14 @@ class IntcodeVM(private val mem: ArrayList<Long>) {
     private fun getParameterMode(ip: Int, arg: Int): ParameterMode? =
         ParameterMode.from((mem.getOrElse(ip) { 0L } / (10.0).pow(arg + 1) % 10).toInt())
 
-    fun run(input: () -> Long, output: (Long) -> Unit) {
-        var ip: Int? = 0
+    fun run(input: () -> Long, output: (Long) -> Unit): Long? {
+        var ip = 0
         var base = 0
+        var lastOutput: Long? = null
 
-        while (ip != null) {
-            ip = when (Opcode.from(mem.getOrElse(ip) { 0L }.toInt() % 100)) {
+        while (true) {
+            val opcode = Opcode.from(mem.getOrElse(ip) { 0L }.toInt() % 100)
+            ip = when (opcode) {
                 Opcode.ADD -> {
                     set(ip, base, 3, get(ip, base, 1) + get(ip, base, 2))
                     ip + 4
@@ -77,7 +78,8 @@ class IntcodeVM(private val mem: ArrayList<Long>) {
                     ip + 2
                 }
                 Opcode.OUT -> {
-                    output(get(ip, base, 1))
+                    lastOutput = get(ip, base, 1)
+                    output(lastOutput)
                     ip + 2
                 }
                 Opcode.JIT -> if (get(ip, base, 1) == 0L) ip + 3 else get(ip, base, 2).toInt()
@@ -94,7 +96,10 @@ class IntcodeVM(private val mem: ArrayList<Long>) {
                     base += get(ip, base, 1).toInt()
                     ip + 2
                 }
-                Opcode.HALT -> null
+                Opcode.HALT -> {
+                    output(Long.MIN_VALUE)
+                    return lastOutput
+                }
                 else -> throw IllegalArgumentException("Invalid opcode: ${mem.getOrElse(ip) { 0L }}.")
             }
         }

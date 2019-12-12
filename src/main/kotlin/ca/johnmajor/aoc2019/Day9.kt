@@ -1,29 +1,19 @@
 package ca.johnmajor.aoc2019
 
-import java.io.File
+class Day9(private val program: List<Long>) : Exercise<Long?, Long?> {
+    override fun part1(): Long? =
+        IntcodeVM(ArrayList(program)).run({ 1L }, {})
 
-fun day9part1(input: ArrayList<Long>): List<Long> {
-    val output = mutableListOf<Long>()
-    IntcodeVM(input).run({ 1L }, { output.add(it) })
-    return output
+    override fun part2(): Long? =
+        IntcodeVM(ArrayList(program)).run({ 2L }, {})
 }
 
-fun day9part2(input: ArrayList<Long>): List<Long> {
-    val output = mutableListOf<Long>()
-    IntcodeVM(input).run({ 2L }, { output.add(it) })
-    return output
-}
-
-fun main() {
-    val input = File(ClassLoader.getSystemResource("day9-input.txt").file)
-        .readText()
+fun day9(): Day9 {
+    val program = Input(9).readText()
         .trim()
         .split(",")
         .map(String::toLong)
-
-    val part1 = day9part1(ArrayList(input)).joinToString(",")
-    println("Part 1 Answer: $part1") // 3780860499
-
-    val part2 = day9part2(ArrayList(input)).joinToString(",")
-    println("Part 2 Answer: $part2") // 33343
+    return Day9(program)
 }
+
+fun main() = run(day9())

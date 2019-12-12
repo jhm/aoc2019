@@ -1,19 +1,16 @@
 package ca.johnmajor.aoc2019
 
-import java.io.File
+class Day5(private val program: List<Long>) : Exercise<Long?, Long?> {
+    override fun part1(): Long? =
+        IntcodeVM(ArrayList(program)).run({ 1L }, {})
 
-fun main() {
-    val input = File(ClassLoader.getSystemResource("day5-input.txt").file)
-        .readText()
-        .trim()
-        .split(",")
-        .map(String::toLong)
-
-    var part1: Long? = null
-    IntcodeVM(ArrayList(input)).run({ 1L }, { part1 = it }) // 9219874
-    println("Part 1 Answer: $part1")
-
-    var part2: Long? = null
-    IntcodeVM(ArrayList(input)).run({ 5L }, { part2 = it }) // 5893654
-    println("Part 2 Answer: $part2")
+    override fun part2(): Long? =
+        IntcodeVM(ArrayList(program)).run({ 5L }, {})
 }
+
+fun day5(): Day5 {
+    val input = Input(5).readText().trim().split(",").map(String::toLong)
+    return Day5(input)
+}
+
+fun main() = run(day5())
