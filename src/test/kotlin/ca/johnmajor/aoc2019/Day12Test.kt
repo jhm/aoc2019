@@ -18,10 +18,10 @@ class Day12Test {
             Moon(9, -8, -3)
         )
         val expected = listOf(
-            Moon(Vec3(-9, -10, 1), Vec3(-2, -2, -1)),
-            Moon(Vec3(4, 10, 9), Vec3(-3, 7, -2)),
-            Moon(Vec3(8, -10, -3), Vec3(5, -1, -2)),
-            Moon(Vec3(5, -10, 3), Vec3(0, -4, 5))
+            Moon(listOf(-9, -10, 1), listOf(-2, -2, -1)),
+            Moon(listOf(4, 10, 9), listOf(-3, 7, -2)),
+            Moon(listOf(8, -10, -3), listOf(5, -1, -2)),
+            Moon(listOf(5, -10, 3), listOf(0, -4, 5))
         )
         assertEquals(expected, Day12(start).run().drop(9).first())
     }
@@ -55,9 +55,9 @@ class Day12Test {
 
     @Test
     fun `parses an input line`() {
-        assertEquals(Vec3(-1, 0, 2), Vec3.parse("<x=-1, y=0, z=2>"))
-        assertEquals(Vec3(2, -10, -7), Vec3.parse("<x=2, y=-10, z=-7>"))
-        assertEquals(Vec3(4, -8, 8), Vec3.parse("<x=4, y=-8, z=8>"))
-        assertEquals(Vec3(3, 5, -1), Vec3.parse("<x=3, y=5, z=-1>"))
+        assertEquals(Moon(-1, 0, 2), Moon.parse("<x=-1, y=0, z=2>"))
+        assertEquals(Moon(2, -10, -7), Moon.parse("<x=2, y=-10, z=-7>"))
+        assertEquals(Moon(4, -8, 8), Moon.parse("<x=4, y=-8, z=8>"))
+        assertEquals(Moon(3, 5, -1), Moon.parse("<x=3, y=5, z=-1>"))
     }
 }
