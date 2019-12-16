@@ -5,7 +5,19 @@ import kotlin.math.absoluteValue
 class Day16(input: String) : Exercise<String, String> {
     private val digits = input.map { it.toInt() - 48 }
 
-    override fun part1(): String = fft().take(100).last().substring(0, 8)
+    override fun part1(): String {
+        val pattern = listOf(0, 1, 0, -1)
+        val ds = digits.toIntArray()
+
+        repeat(100) {
+            for (i in 1 until ds.size) {
+                ds[i - 1] = (i..ds.size).fold(0) { sum, n ->
+                    sum + ds[n - 1] * pattern[(n / i) % 4]
+                }.absoluteValue % 10
+            }
+        }
+        return ds.take(8).joinToString("")
+    }
 
     override fun part2(): String {
         val offset = digits.take(7).fold(0) { a, d -> 10 * a + d }
@@ -21,19 +33,6 @@ class Day16(input: String) : Exercise<String, String> {
             }
         }
         return signal.subList(0, 8).joinToString("")
-    }
-
-    private fun fft(pattern: List<Int> = listOf(0, 1, 0, -1)): Sequence<String> = sequence {
-        val current = digits.toIntArray()
-        while (true) {
-            for (i in current.indices) {
-                current[i] = current.withIndex()
-                    .map { (j, d) -> d * pattern[((j + 1) / (i + 1)) % pattern.size] }
-                    .sum()
-                    .absoluteValue % 10
-            }
-            yield(current.joinToString(""))
-        }
     }
 
     private fun <T> List<T>.cycle(): Sequence<T> = sequence {
