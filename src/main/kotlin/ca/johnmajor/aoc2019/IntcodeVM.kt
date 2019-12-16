@@ -2,38 +2,44 @@ package ca.johnmajor.aoc2019
 
 import kotlin.math.pow
 
-class IntcodeVM(private val mem: ArrayList<Long>) {
-    enum class Opcode(val opcode: Int) {
-        ADD(1),
-        MUL(2),
-        SAV(3),
-        OUT(4),
-        JIT(5),
-        JIF(6),
-        LT(7),
-        EQ(8),
-        BASE(9),
-        HALT(99);
+enum class Opcode(val opcode: Int) {
+    ADD(1),
+    MUL(2),
+    SAV(3),
+    OUT(4),
+    JIT(5),
+    JIF(6),
+    LT(7),
+    EQ(8),
+    BASE(9),
+    HALT(99);
 
-        companion object {
-            private val lookup = values().associateBy { it.opcode }
-            fun from(opcode: Int): Opcode? = lookup[opcode]
-        }
+    companion object {
+        private val lookup = values().associateBy { it.opcode }
+        fun from(opcode: Int): Opcode? = lookup[opcode]
     }
+}
 
-    enum class ParameterMode {
-        POSITION,
-        IMMEDIATE,
-        RELATIVE;
+enum class ParameterMode {
+    POSITION,
+    IMMEDIATE,
+    RELATIVE;
 
-        companion object {
-            private val lookup = values().associateBy { it.ordinal }
-            fun from(i: Int): ParameterMode? = lookup[i]
-        }
+    companion object {
+        private val lookup = values().associateBy { it.ordinal }
+        fun from(i: Int): ParameterMode? = lookup[i]
     }
+}
 
-    private fun set(ip: Int, rb: Int, arg: Int, value: Long) {
-        val index = getIndex(ip, rb, arg)
+class IntcodeVM(private val mem: ArrayList<Long>, private val input: () -> Long) {
+    private var ip = 0
+    private var base = 0
+
+    var halted = false
+        private set
+
+    private fun set(n: Int, value: Long) {
+        val index = getIndex(n)
         if (index < this.mem.size) {
             mem[index] = value
         } else {
@@ -43,65 +49,66 @@ class IntcodeVM(private val mem: ArrayList<Long>) {
         }
     }
 
-    private fun get(ip: Int, rb: Int, arg: Int): Long =
-        mem.getOrElse(getIndex(ip, rb, arg)) { 0L }
+    private fun get(n: Int): Long =
+        mem.getOrElse(getIndex(n)) { 0L }
 
-    private fun getIndex(ip: Int, rb: Int, arg: Int): Int =
-        when (getParameterMode(ip, arg)) {
-            ParameterMode.POSITION -> mem[ip + arg].toInt()
-            ParameterMode.IMMEDIATE -> ip + arg
-            ParameterMode.RELATIVE -> rb + mem[ip + arg].toInt()
+    private fun getIndex(n: Int): Int =
+        when (getParameterMode(n)) {
+            ParameterMode.POSITION -> mem[ip + n].toInt()
+            ParameterMode.IMMEDIATE -> ip + n
+            ParameterMode.RELATIVE -> base + mem[ip + n].toInt()
             else -> throw IllegalArgumentException("Invalid parameter mode.")
         }
 
-    private fun getParameterMode(ip: Int, arg: Int): ParameterMode? =
-        ParameterMode.from((mem.getOrElse(ip) { 0L } / (10.0).pow(arg + 1) % 10).toInt())
+    private fun getParameterMode(n: Int): ParameterMode? =
+        ParameterMode.from((mem.getOrElse(ip) { 0L } / (10.0).pow(n + 1) % 10).toInt())
 
-    fun run(input: () -> Long, output: (Long) -> Unit): Long? {
-        var ip = 0
-        var base = 0
-        var lastOutput: Long? = null
-
+    fun nextOutput(): Long? {
         while (true) {
-            val opcode = Opcode.from(mem.getOrElse(ip) { 0L }.toInt() % 100)
-            ip = when (opcode) {
+            when (Opcode.from(mem.getOrElse(ip) { 0L }.toInt() % 100)) {
                 Opcode.ADD -> {
-                    set(ip, base, 3, get(ip, base, 1) + get(ip, base, 2))
-                    ip + 4
+                    set(3, get(1) + get(2))
+                    ip += 4
                 }
                 Opcode.MUL -> {
-                    set(ip, base, 3, get(ip, base, 1) * get(ip, base, 2))
-                    ip + 4
+                    set(3, get(1) * get(2))
+                    ip += 4
                 }
                 Opcode.SAV -> {
-                    set(ip, base, 1, input())
-                    ip + 2
+                    set(1, input())
+                    ip += 2
                 }
                 Opcode.OUT -> {
-                    lastOutput = get(ip, base, 1)
-                    output(lastOutput)
-                    ip + 2
+                    val output = get(1)
+                    ip += 2
+                    return output
                 }
-                Opcode.JIT -> if (get(ip, base, 1) == 0L) ip + 3 else get(ip, base, 2).toInt()
-                Opcode.JIF -> if (get(ip, base, 1) != 0L) ip + 3 else get(ip, base, 2).toInt()
+                Opcode.JIT -> if (get(1) == 0L) ip += 3 else ip = get(2).toInt()
+                Opcode.JIF -> if (get(1) != 0L) ip += 3 else ip = get(2).toInt()
                 Opcode.LT -> {
-                    set(ip, base, 3, if (get(ip, base, 1) < get(ip, base, 2)) 1L else 0L)
-                    ip + 4
+                    set(3, if (get(1) < get(2)) 1L else 0L)
+                    ip += 4
                 }
                 Opcode.EQ -> {
-                    set(ip, base, 3, if (get(ip, base, 1) == get(ip, base, 2)) 1L else 0L)
-                    ip + 4
+                    set(3, if (get(1) == get(2)) 1L else 0L)
+                    ip += 4
                 }
                 Opcode.BASE -> {
-                    base += get(ip, base, 1).toInt()
-                    ip + 2
+                    base += get(1).toInt()
+                    ip += 2
                 }
                 Opcode.HALT -> {
-                    output(Long.MIN_VALUE)
-                    return lastOutput
+                    halted = true
+                    return null
                 }
                 else -> throw IllegalArgumentException("Invalid opcode: ${mem.getOrElse(ip) { 0L }}.")
             }
+        }
+    }
+
+    fun runUntilHalt(): Sequence<Long> = sequence {
+        while (true) {
+            yield(nextOutput() ?: break)
         }
     }
 }

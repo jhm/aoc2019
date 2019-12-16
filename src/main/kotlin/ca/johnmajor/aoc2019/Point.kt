@@ -16,8 +16,13 @@ data class Point(val x: Int, val y: Int) {
     fun translate(move: CardinalMove): Point =
         translate(move.direction, move.distance)
 
-    fun manhattanDistance(from: Point = Point(0, 0)) = abs(x - from.x) + abs(y - from.y)
+    fun manhattanDistance(from: Point = ORIGIN) = abs(x - from.x) + abs(y - from.y)
 
     fun distance(other: Point): Double =
         sqrt((other.x - x.toDouble()).pow(2) + (other.y - y.toDouble()).pow(2))
+
+    companion object {
+        @JvmField
+        val ORIGIN = Point(0, 0)
+    }
 }

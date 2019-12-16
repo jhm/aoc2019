@@ -15,9 +15,8 @@ class Day7(private val program: List<Long>) : Exercise<Long?, Long?> {
         val threads = (settings.indices).map { i ->
             queues[i].put(settings[i])
             thread {
-                IntcodeVM(ArrayList(program)).run(
-                    queues[i]::take, queues[(i + 1) % settings.size]::put
-                )
+                IntcodeVM(ArrayList(program), queues[i]::take).runUntilHalt()
+                    .forEach(queues[(i + 1) % settings.size]::put)
             }
         }
         queues[0].put(0L)

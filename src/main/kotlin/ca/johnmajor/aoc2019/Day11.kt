@@ -1,7 +1,6 @@
 package ca.johnmajor.aoc2019
 
 import java.util.concurrent.LinkedBlockingQueue
-import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
 
@@ -28,25 +27,22 @@ class Day11(private val program: List<Long>) : Exercise<Long, String> {
 
     fun run(start: Long): Map<Point, Long> {
         val input = LinkedBlockingQueue<Long>()
-        val output = LinkedBlockingQueue<Long>()
-        val controller = IntcodeVM(ArrayList(ArrayList(program)))
+        val vm = IntcodeVM(ArrayList(program), input::take)
         val grid = mutableMapOf(Point(0, 0) to start)
 
         var direction = CardinalDirection.NORTH
         var current = Point(0, 0)
 
-        val thread = thread { controller.run(input::take, output::put) }
         input.put(start)
-        var color = output.take()
+        var color = vm.nextOutput() ?: error("VM halted")
 
-        while (color != Long.MIN_VALUE) {
+        while (true) {
             grid[current] = color
-            direction = direction.rotate(output.take())
+            direction = direction.rotate(vm.nextOutput() ?: break)
             current = current.translate(direction, 1)
             input.put(grid.getOrDefault(current, 0))
-            color = output.take()
+            color = vm.nextOutput() ?: break
         }
-        thread.join()
         return grid
     }
 
