@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class Day15(private val maze: Maze) : Exercise<Int, Int> {
     override fun part1(): Int =
-        maze.findShortestPathToOxygen() ?: error("Couldn't find path to oxygen.")
+        maze.shortestPathToOxygen() ?: error("Couldn't find path to oxygen.")
 
     override fun part2(): Int =
         maze.timeToFlood() ?: error("Couldn't find time for oxygen flood.")
@@ -16,7 +16,7 @@ class Day15(private val maze: Maze) : Exercise<Int, Int> {
 
 data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
 
-    fun findShortestPathToOxygen(): Int? {
+    fun shortestPathToOxygen(): Int? {
         val queue = ArrayDeque<Point>()
         val visited = mutableSetOf<Point>()
         val origins = mutableMapOf<Point, Point>()
@@ -24,10 +24,10 @@ data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
 
         while (queue.isNotEmpty()) {
             val position = queue.remove()
+            if (position == oxygen) {
+                return position.distanceToOrigin(origins)
+            }
             if (visited.add(position)) {
-                if (points[position] == Tile.OXYGEN) {
-                    return position.distanceToOrigin(origins)
-                }
                 for (neighbor in openNeighbors(position, visited)) {
                     origins[neighbor] = position
                     queue.add(neighbor)
