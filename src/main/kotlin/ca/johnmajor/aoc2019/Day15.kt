@@ -61,25 +61,25 @@ data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
             .filter { it !in visited && points[it] != Tile.WALL }
 
     override fun toString(): String {
-        val (xs, ys) = points.keys.fold((0 to 0) to (0 to 0)) { acc, point ->
-            val xmin = min(acc.first.first, point.x)
-            val xmax = max(acc.first.second, point.x)
-            val ymin = min(acc.second.first, point.y)
-            val ymax = max(acc.second.second, point.y)
-            (xmin to xmax) to (ymin to ymax)
+        val (xmin, xmax, ymin, ymax) = points.keys.fold(arrayOf(0, 0, 0, 0)) { acc, point ->
+            acc[0] = min(acc[0], point.x)
+            acc[1] = max(acc[1], point.x)
+            acc[2] = min(acc[2], point.y)
+            acc[3] = max(acc[3], point.y)
+            acc
         }
 
         val sb = StringBuilder()
-        for (y in ys.first until ys.second) {
-            for (x in xs.first until xs.second) {
+        for (y in ymin until ymax) {
+            for (x in xmin until xmax) {
                 sb.append(
                     if (x == 0 && -y == 0) {
                         'H'
                     } else {
                         when (points[Point(x, -y)]) {
                             Tile.WALL -> "\u2593"
-                            Tile.OPEN -> "."
-                            Tile.OXYGEN -> "$"
+                            Tile.OPEN -> " "
+                            Tile.OXYGEN -> "\u2716"
                             else -> '#'
                         }
                     }
