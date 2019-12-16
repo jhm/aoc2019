@@ -19,6 +19,14 @@ enum class CardinalDirection {
             WEST -> SOUTH
         }
 
+    fun opposite(): CardinalDirection =
+        when (this) {
+            NORTH -> SOUTH
+            SOUTH -> NORTH
+            EAST -> WEST
+            WEST -> EAST
+        }
+
     companion object {
         fun from(s: String): CardinalDirection? =
             if (s.isEmpty()) null else from(s.first())
