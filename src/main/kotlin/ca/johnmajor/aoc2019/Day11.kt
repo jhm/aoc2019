@@ -19,8 +19,7 @@ class Day11(private val program: List<Long>) : Exercise<Long, String> {
 
         return "\n" + (ymax downTo ymin).joinToString("\n") { y ->
             (xmin..xmax).joinToString("") { x ->
-                val point = Point(x, y)
-                if (grid[point] == 1L) "\u2588" else " "
+                if (grid[Point(x, y)] == 1L) "\u2588" else " "
             }
         }
     }
@@ -31,7 +30,7 @@ class Day11(private val program: List<Long>) : Exercise<Long, String> {
         val grid = mutableMapOf(Point(0, 0) to start)
 
         var direction = CardinalDirection.NORTH
-        var current = Point(0, 0)
+        var current = Point.ORIGIN
 
         input.put(start)
         var color = vm.nextOutput() ?: error("VM halted")

@@ -106,7 +106,7 @@ class IntcodeVM(private val mem: ArrayList<Long>, private val input: () -> Long)
         }
     }
 
-    fun runUntilHalt(): Sequence<Long> = sequence {
+    fun run(): Sequence<Long> = sequence {
         while (true) {
             yield(nextOutput() ?: break)
         }

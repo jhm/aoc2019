@@ -2,10 +2,10 @@ package ca.johnmajor.aoc2019
 
 class Day9(private val program: List<Long>) : Exercise<Long?, Long?> {
     override fun part1(): Long? =
-        IntcodeVM(ArrayList(program)) { 1L }.runUntilHalt().last()
+        IntcodeVM(ArrayList(program)) { 1L }.run().last()
 
     override fun part2(): Long? =
-        IntcodeVM(ArrayList(program)) { 2L }.runUntilHalt().last()
+        IntcodeVM(ArrayList(program)) { 2L }.run().last()
 }
 
 fun day9(): Day9 {

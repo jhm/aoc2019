@@ -173,7 +173,6 @@ data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
 fun day15(): Day15 {
     val program = Input(15).readText().trim().split(",").map(String::toLong)
     val maze = Maze.fromIntcodeProgram(program)
-    println(maze.draw())
     return Day15(maze)
 }
 

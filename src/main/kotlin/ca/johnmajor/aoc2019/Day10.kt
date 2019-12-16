@@ -49,11 +49,9 @@ class Day10(private val asteroids: List<Point>) : Exercise<Int?, Int?> {
 
 fun day10(): Day10 {
     val input = Input(10).readLines()
-        .asSequence()
         .withIndex()
         .flatMap { (y, line) ->
-            line.asSequence()
-                .withIndex()
+            line.withIndex()
                 .filter { it.value == '#' }
                 .map { Point(it.index, y) }
         }.toList()

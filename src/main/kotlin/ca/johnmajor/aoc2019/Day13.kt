@@ -4,7 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class Day13(private val program: List<Long>) : Exercise<Int, Int> {
     override fun part1(): Int {
-        val output = IntcodeVM(ArrayList(program)) { 0L }.runUntilHalt()
+        val output = IntcodeVM(ArrayList(program)) { 0L }.run()
         return output.takeWhile { it != Long.MIN_VALUE }
             .chunked(3)
             .count { it[2] == 2L }

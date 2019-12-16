@@ -34,10 +34,8 @@ class Day12(private val moons: List<Moon>) : Exercise<Int, Long> {
     private fun step(xs: List<Moon>): List<Moon> = xs.map { it.move(xs) }
 }
 
-data class Moon(val points: List<Int>, val velocity: List<Int>) {
+data class Moon(val points: List<Int>, val velocity: List<Int> = List(points.size) { 0 }) {
     constructor(vararg points: Int) : this(points.toList())
-
-    constructor(points: List<Int>) : this(points, List(points.size) { 0 })
 
     fun energy(): Int = points.sumBy(::abs) * velocity.sumBy(::abs)
 
