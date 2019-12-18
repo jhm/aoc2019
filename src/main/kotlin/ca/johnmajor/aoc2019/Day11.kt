@@ -38,7 +38,7 @@ class Day11(private val program: List<Long>) : Exercise<Long, String> {
         while (true) {
             grid[current] = color
             direction = direction.rotate(vm.nextOutput() ?: break)
-            current = current.translate(direction, 1)
+            current = current.move(direction)
             input.put(grid.getOrDefault(current, 0))
             color = vm.nextOutput() ?: break
         }

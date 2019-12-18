@@ -19,6 +19,9 @@ enum class CardinalDirection {
             WEST -> SOUTH
         }
 
+    fun left(): CardinalDirection = counterClockwise()
+    fun right(): CardinalDirection = clockwise()
+
     fun opposite(): CardinalDirection =
         when (this) {
             NORTH -> SOUTH

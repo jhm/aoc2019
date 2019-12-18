@@ -19,7 +19,7 @@ private fun List<CardinalMove>.points(start: Point = Point(0, 0)): Sequence<Poin
             yield(current)
             forEach { move ->
                 repeat(move.distance) {
-                    current = current.translate(move.direction, 1)
+                    current = current.move(move.direction)
                     yield(current)
                 }
             }

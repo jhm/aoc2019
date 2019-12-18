@@ -57,7 +57,7 @@ data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
 
     private fun openNeighbors(position: Point, visited: Set<Point>): List<Point> =
         CardinalDirection.values()
-            .map { position.translate(it, 1) }
+            .map { position.move(it) }
             .filter { it !in visited && points[it] != Tile.WALL }
 
     fun draw(): String {
@@ -111,7 +111,7 @@ data class Maze(val points: Map<Point, Tile>, val oxygen: Point) {
             var oxygen: Point? = null
 
             fun explore(from: Point, direction: CardinalDirection) {
-                val next = from.translate(direction, 1)
+                val next = from.move(direction)
                 if (next in visited || map[next] == Tile.WALL) {
                     return
                 }
