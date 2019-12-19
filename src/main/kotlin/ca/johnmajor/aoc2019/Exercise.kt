@@ -31,6 +31,7 @@ fun runAll() {
     run(day15())
     run(day16())
     run(day17())
+    run(day18())
 }
 
 fun main() = runAll()
